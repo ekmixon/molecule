@@ -17,7 +17,7 @@ class Collections(AnsibleGalaxyBase):
     @property
     def default_options(self):
         general = super(Collections, self).default_options
-        specific = util.merge_dicts(
+        return util.merge_dicts(
             general,
             {
                 "requirements-file": os.path.join(
@@ -28,8 +28,6 @@ class Collections(AnsibleGalaxyBase):
                 ),
             },
         )
-
-        return specific
 
     @property
     def default_env(self):

@@ -146,9 +146,10 @@ class Driver(object):
 
     @property
     def ssh_connection_options(self):
-        if self._config.config["driver"]["ssh_connection_options"]:
-            return self._config.config["driver"]["ssh_connection_options"]
-        return self.default_ssh_connection_options
+        return (
+            self._config.config["driver"]["ssh_connection_options"]
+            or self.default_ssh_connection_options
+        )
 
     @property
     def safe_files(self):
@@ -274,11 +275,7 @@ class Driver(object):
         class, allowing driver writers to define playbooks without having
         to override this method.
         """
-        p = os.path.join(
-            self._path,
-            "playbooks",
-            step + ".yml",
-        )
+        p = os.path.join(self._path, "playbooks", f"{step}.yml")
         if os.path.isfile(p):
             return p
 

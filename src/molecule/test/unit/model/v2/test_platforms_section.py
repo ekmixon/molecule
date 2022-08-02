@@ -40,11 +40,12 @@ def test_platforms_unique_names(_config):
     expected_validation_errors = {
         "platforms": [
             {
-                0: [{"name": ["'{}' is not unique".format(instance_name)]}],
-                1: [{"name": ["'{}' is not unique".format(instance_name)]}],
+                0: [{"name": [f"'{instance_name}' is not unique"]}],
+                1: [{"name": [f"'{instance_name}' is not unique"]}],
             }
         ]
     }
+
 
     assert expected_validation_errors == schema_v3.validate(_config)
 

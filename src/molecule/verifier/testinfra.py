@@ -142,8 +142,7 @@ class Testinfra(Verifier):
         c = self._config.config
         for f in c["verifier"]["additional_files_or_dirs"]:
             glob_path = os.path.join(self._config.verifier.directory, f)
-            glob_list = glob.glob(glob_path)
-            if glob_list:
+            if glob_list := glob.glob(glob_path):
                 files_list.extend(glob_list)
 
         return files_list
@@ -171,7 +170,7 @@ class Testinfra(Verifier):
             LOG.warning(msg)
             return
 
-        if not len(self._tests) > 0:
+        if len(self._tests) <= 0:
             msg = "Skipping, no tests found."
             LOG.warning(msg)
             return
@@ -179,7 +178,7 @@ class Testinfra(Verifier):
         if self._testinfra_command is None:
             self.bake()
 
-        msg = "Executing Testinfra tests found in {}/...".format(self.directory)
+        msg = f"Executing Testinfra tests found in {self.directory}/..."
         LOG.info(msg)
 
         result = util.run_command(self._testinfra_command, debug=self._config.debug)
@@ -196,12 +195,7 @@ class Testinfra(Verifier):
         :return: list
         """
         return sorted(
-            [
-                filename
-                for filename in util.os_walk(
-                    self.directory, "test_*.py", followlinks=True
-                )
-            ]
+            list(util.os_walk(self.directory, "test_*.py", followlinks=True))
         )
 
     def schema(self):

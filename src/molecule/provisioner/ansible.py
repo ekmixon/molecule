@@ -528,19 +528,19 @@ class Ansible(base.Base):
 
         try:
             path = self._absolute_path_for(env, "ANSIBLE_ROLES_PATH")
-            roles_path = "{}:{}".format(roles_path, path)
+            roles_path = f"{roles_path}:{path}"
         except KeyError:
             pass
 
         try:
             path = self._absolute_path_for(env, "ANSIBLE_LIBRARY")
-            library_path = "{}:{}".format(library_path, path)
+            library_path = f"{library_path}:{path}"
         except KeyError:
             pass
 
         try:
             path = self._absolute_path_for(env, "ANSIBLE_FILTER_PLUGINS")
-            filter_plugins_path = "{}:{}".format(filter_plugins_path, path)
+            filter_plugins_path = f"{filter_plugins_path}:{path}"
         except KeyError:
             pass
 
@@ -851,9 +851,9 @@ class Ansible(base.Base):
             source = os.path.join(self._config.scenario.directory, source)
 
             if not os.path.exists(source):
-                msg = "The source path '{}' does not exist.".format(source)
+                msg = f"The source path '{source}' does not exist."
                 util.sysexit_with_message(msg)
-            msg = "Inventory {} linked to {}".format(source, target)
+            msg = f"Inventory {source} linked to {target}"
             LOG.info(msg)
             os.symlink(source, target)
 
@@ -918,8 +918,7 @@ class Ansible(base.Base):
         paths = [util.abs_path(os.path.join(self._get_plugin_directory(), "modules"))]
 
         for d in drivers():
-            p = d.modules_dir()
-            if p:
+            if p := d.modules_dir():
                 paths.append(p)
         paths.extend(
             [

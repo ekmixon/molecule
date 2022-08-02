@@ -43,10 +43,7 @@ def _instance(_command_args):
 
 @pytest.fixture
 def invalid_template_dir(resources_folder_path):
-    invalid_role_template_path = os.path.join(
-        resources_folder_path, "invalid_scenario_template"
-    )
-    return invalid_role_template_path
+    return os.path.join(resources_folder_path, "invalid_scenario_template")
 
 
 def test_execute(temp_dir, _instance, patched_logger_info):
@@ -58,7 +55,7 @@ def test_execute(temp_dir, _instance, patched_logger_info):
     assert os.path.isdir("./molecule/test-scenario")
 
     scenario_directory = os.path.join(temp_dir.strpath, "molecule", "test-scenario")
-    msg = "Initialized scenario in {} successfully.".format(scenario_directory)
+    msg = f"Initialized scenario in {scenario_directory} successfully."
     patched_logger_info.assert_any_call(msg)
 
 

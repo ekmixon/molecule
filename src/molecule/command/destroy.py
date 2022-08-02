@@ -110,14 +110,7 @@ class Destroy(base.Base):
 
 @base.click_command_ex()
 @click.pass_context
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
 @click.option(
     "--driver-name",
     "-d",
@@ -135,7 +128,7 @@ class Destroy(base.Base):
     default=False,
     help="Enable or disable parallel mode. Default is disabled.",
 )
-def destroy(ctx, scenario_name, driver_name, __all, parallel):  # pragma: no cover
+def destroy(ctx, scenario_name, driver_name, __all, parallel):    # pragma: no cover
     """Use the provisioner to destroy the instances."""
     args = ctx.obj.get("args")
     subcommand = base._get_subcommand(__name__)

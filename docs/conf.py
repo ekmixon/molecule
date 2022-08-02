@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = "Molecule"
-copyright = " %s, Red Hat Inc." % datetime.date.today().year
+copyright = f" {datetime.date.today().year}, Red Hat Inc."
 author = "AUTHORS.rst"
 
 github_url = "https://github.com"

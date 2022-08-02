@@ -81,8 +81,7 @@ class Idempotence(base.Base):
 
         output = self._config.provisioner.converge()
 
-        idempotent = self._is_idempotent(output)
-        if idempotent:
+        if idempotent := self._is_idempotent(output):
             msg = "Idempotence completed successfully."
             LOG.info(msg)
         else:
@@ -100,14 +99,7 @@ class Idempotence(base.Base):
         # Remove blank lines to make regex matches easier
         output = re.sub(r"\n\s*\n*", "\n", output)
 
-        # Look for any non-zero changed lines
-        changed = re.search(r"(changed=[1-9][0-9]*)", output)
-
-        if changed:
-            # Not idempotent
-            return False
-
-        return True
+        return not (changed := re.search(r"(changed=[1-9][0-9]*)", output))
 
     def _non_idempotent_tasks(self, output):
         """
@@ -126,29 +118,22 @@ class Idempotence(base.Base):
         output_lines = output.split("\n")
         res = []
         task_line = ""
-        for _, line in enumerate(output_lines):
+        for line in output_lines:
             if line.startswith("TASK"):
                 task_line = line
             elif line.startswith("changed"):
                 host_name = re.search(r"\[(.*)\]", line).groups()[0]
                 task_name = re.search(r"\[(.*)\]", task_line).groups()[0]
-                res.append("* [{}] => {}".format(host_name, task_name))
+                res.append(f"* [{host_name}] => {task_name}")
 
         return res
 
 
 @base.click_command_ex()
 @click.pass_context
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
 @click.argument("ansible_args", nargs=-1, type=click.UNPROCESSED)
-def idempotence(ctx, scenario_name, ansible_args):  # pragma: no cover
+def idempotence(ctx, scenario_name, ansible_args):    # pragma: no cover
     """Use the provisioner to configure the instances and parse the output to \
     determine idempotence."""
     args = ctx.obj.get("args")

@@ -98,21 +98,14 @@ class Create(base.Base):
 
 @base.click_command_ex()
 @click.pass_context
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
 @click.option(
     "--driver-name",
     "-d",
     type=click.Choice([str(s) for s in drivers()]),
     help=f"Name of driver to use. ({DEFAULT_DRIVER})",
 )
-def create(ctx, scenario_name, driver_name):  # pragma: no cover
+def create(ctx, scenario_name, driver_name):    # pragma: no cover
     """Use the provisioner to start the instances."""
     args = ctx.obj.get("args")
     subcommand = base._get_subcommand(__name__)

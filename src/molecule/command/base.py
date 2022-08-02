@@ -112,29 +112,24 @@ def execute_cmdline_scenarios(scenario_name, args, command_args, ansible_args=()
             prepare_environment()
 
         if command_args.get("subcommand") == "reset":
-            LOG.info("Removing %s" % scenario.ephemeral_directory)
+            LOG.info(f"Removing {scenario.ephemeral_directory}")
             shutil.rmtree(scenario.ephemeral_directory)
             return
         try:
             execute_scenario(scenario)
         except SystemExit:
-            # if the command has a 'destroy' arg, like test does,
-            # handle that behavior here.
-            if command_args.get("destroy") == "always":
-                msg = (
-                    "An error occurred during the {} sequence action: "
-                    "'{}'. Cleaning up."
-                ).format(scenario.config.subcommand, scenario.config.action)
-                LOG.warning(msg)
-                execute_subcommand(scenario.config, "cleanup")
-                execute_subcommand(scenario.config, "destroy")
-                # always prune ephemeral dir if destroying on failure
-                scenario.prune()
-                if scenario.config.is_parallel:
-                    scenario._remove_scenario_state_directory()
-                util.sysexit()
-            else:
+            if command_args.get("destroy") != "always":
                 raise
+            msg = f"An error occurred during the {scenario.config.subcommand} sequence action: '{scenario.config.action}'. Cleaning up."
+
+            LOG.warning(msg)
+            execute_subcommand(scenario.config, "cleanup")
+            execute_subcommand(scenario.config, "destroy")
+            # always prune ephemeral dir if destroying on failure
+            scenario.prune()
+            if scenario.config.is_parallel:
+                scenario._remove_scenario_state_directory()
+            util.sysexit()
 
 
 def execute_subcommand(config, subcommand):
@@ -207,13 +202,11 @@ def _verify_configs(configs, glob_str=MOLECULE_GLOB):
         scenario_names = [c.scenario.name for c in configs]
         for scenario_name, n in collections.Counter(scenario_names).items():
             if n > 1:
-                msg = ("Duplicate scenario name '{}' found.  " "Exiting.").format(
-                    scenario_name
-                )
+                msg = f"Duplicate scenario name '{scenario_name}' found.  Exiting."
                 util.sysexit_with_message(msg)
 
     else:
-        msg = "'{}' glob failed.  Exiting.".format(glob_str)
+        msg = f"'{glob_str}' glob failed.  Exiting."
         util.sysexit_with_message(msg)
 
 

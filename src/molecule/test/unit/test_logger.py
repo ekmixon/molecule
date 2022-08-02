@@ -53,7 +53,7 @@ def _instance(_dummy_class, config_instance, _patched_logger_env):
 def _patched_logger_env(request, monkeypatch):
     """Parametrize tests with and without CI env vars."""
     envvars = {"CI": None, "GITHUB_ACTIONS": None, "GITLAB_CI": None, "TRAVIS": None}
-    envvars.update(request.param[1])
+    envvars |= request.param[1]
     for envvar, value in envvars.items():
         if value is None:
             monkeypatch.delenv(envvar, raising=False)

@@ -59,9 +59,11 @@ class AnsiblePlaybook(object):
         self.add_cli_arg("inventory", self._config.provisioner.inventory_directory)
         options = util.merge_dicts(self._config.provisioner.options, self._cli)
         verbose_flag = util.verbose_flag(options)
-        if self._playbook != self._config.provisioner.playbooks.converge:
-            if options.get("become"):
-                del options["become"]
+        if (
+            self._playbook != self._config.provisioner.playbooks.converge
+            and options.get("become")
+        ):
+            del options["become"]
 
         # We do not pass user-specified Ansible arguments to the create and
         # destroy invocations because playbooks involved in those two
@@ -100,7 +102,7 @@ class AnsiblePlaybook(object):
             self.bake()
 
         if not self._playbook:
-            LOG.warning("Skipping, %s action has no playbook." % self._config.action)
+            LOG.warning(f"Skipping, {self._config.action} action has no playbook.")
             return
 
         self._config.driver.sanity_checks()

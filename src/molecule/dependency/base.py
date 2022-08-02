@@ -61,10 +61,10 @@ class Base(object):
             pass
 
         for counter in range(1, (self.RETRY + 1)):
-            msg = "Retrying dependency ... {}/{} time(s)".format(counter, self.RETRY)
+            msg = f"Retrying dependency ... {counter}/{self.RETRY} time(s)"
             LOG.warning(msg)
 
-            msg = "Sleeping {} seconds before retrying ...".format(self.SLEEP)
+            msg = f"Sleeping {self.SLEEP} seconds before retrying ..."
             LOG.warning(msg)
             time.sleep(self.SLEEP)
             self.SLEEP += self.BACKOFF

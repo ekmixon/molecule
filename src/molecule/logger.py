@@ -75,7 +75,7 @@ def get_logger(name: str) -> logging.Logger:
 
     Returned logger inherits configuration from the molecule logger.
     """
-    return logging.getLogger("molecule." + name)
+    return logging.getLogger(f"molecule.{name}")
 
 
 def github_actions_groups(func: Callable) -> Callable:

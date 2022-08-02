@@ -138,7 +138,7 @@ def test_os_walk(temp_dir):
         os.makedirs(scenario_directory)
         util.write_file(molecule_file, "")
 
-    result = [f for f in util.os_walk(molecule_directory, "molecule.yml")]
+    result = list(util.os_walk(molecule_directory, "molecule.yml"))
     assert 3 == len(result)
 
 
@@ -154,7 +154,7 @@ def test_write_file(temp_dir):
     util.write_file(dest_file, contents)
     with util.open_file(dest_file) as stream:
         data = stream.read()
-    x = "# Molecule managed\n\n{}".format(contents)
+    x = f"# Molecule managed\n\n{contents}"
 
     assert x == data
 

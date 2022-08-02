@@ -39,9 +39,7 @@ def write_molecule_file(filename, data):
 @pytest.helpers.register
 def os_split(s):
     rest, tail = os.path.split(s)
-    if rest in ("", os.path.sep):
-        return (tail,)
-    return os_split(rest) + (tail,)
+    return (tail, ) if rest in ("", os.path.sep) else os_split(rest) + (tail,)
 
 
 @pytest.fixture

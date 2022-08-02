@@ -85,20 +85,13 @@ class Check(base.Base):
 
 @base.click_command_ex()
 @click.pass_context
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
 @click.option(
     "--parallel/--no-parallel",
     default=MOLECULE_PARALLEL,
     help="Enable or disable parallel mode. Default is disabled.",
 )
-def check(ctx, scenario_name, parallel):  # pragma: no cover
+def check(ctx, scenario_name, parallel):    # pragma: no cover
     """Use the provisioner to perform a Dry-Run (destroy, dependency, create, \
     prepare, converge)."""
     args = ctx.obj.get("args")

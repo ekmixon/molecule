@@ -106,14 +106,7 @@ class Prepare(base.Base):
 
 @base.click_command_ex()
 @click.pass_context
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
 @click.option(
     "--driver-name",
     "-d",
@@ -126,7 +119,7 @@ class Prepare(base.Base):
     default=False,
     help="Enable or disable force mode. Default is disabled.",
 )
-def prepare(ctx, scenario_name, driver_name, force):  # pragma: no cover
+def prepare(ctx, scenario_name, driver_name, force):    # pragma: no cover
     """Use the provisioner to prepare the instances into a particular starting state."""
     args = ctx.obj.get("args")
     subcommand = base._get_subcommand(__name__)

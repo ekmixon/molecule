@@ -106,7 +106,7 @@ class Scenario(object):
         :return: None
         """
         directory = str(Path(self.ephemeral_directory).parent)
-        LOG.info("Removing {}".format(directory))
+        LOG.info(f"Removing {directory}")
         shutil.rmtree(directory)
 
     def prune(self):
@@ -155,9 +155,7 @@ class Scenario(object):
             project_directory = os.path.basename(self.config.project_directory)
 
             if self.config.is_parallel:
-                project_directory = "{}-{}".format(
-                    project_directory, self.config._run_uuid
-                )
+                project_directory = f"{project_directory}-{self.config._run_uuid}"
 
             project_scenario_directory = os.path.join(
                 self.config.cache_directory, project_directory, self.name
@@ -283,7 +281,7 @@ def ephemeral_directory(path: Optional[str] = None) -> str:
         d = os.getenv("XDG_CACHE_HOME", os.path.expanduser("~/.cache"))
     if not d:
         raise RuntimeError("Unable to determine ephemeral directory to use.")
-    d = os.path.abspath(os.path.join(d, path if path else "molecule"))
+    d = os.path.abspath(os.path.join(d, path or "molecule"))
 
     if not os.path.isdir(d):
         os.umask(0o077)

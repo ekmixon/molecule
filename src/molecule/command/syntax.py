@@ -75,15 +75,8 @@ class Syntax(base.Base):
 
 @base.click_command_ex()
 @click.pass_context
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
-def syntax(ctx, scenario_name):  # pragma: no cover
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
+def syntax(ctx, scenario_name):    # pragma: no cover
     """Use the provisioner to syntax check the role."""
     args = ctx.obj.get("args")
     subcommand = base._get_subcommand(__name__)

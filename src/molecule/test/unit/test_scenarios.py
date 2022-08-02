@@ -55,7 +55,7 @@ def test_scenarios_private_member(_instance):
 
 
 def test_scenarios_iterator(_instance):
-    s = [scenario for scenario in _instance]
+    s = list(_instance)
 
     assert "default" == s[0].name
     assert "foo" == s[1].name

@@ -170,9 +170,7 @@ class Delegated(Driver):
 
     @property
     def default_ssh_connection_options(self):
-        if self.managed:
-            return self._get_ssh_connection_options()
-        return []
+        return self._get_ssh_connection_options() if self.managed else []
 
     def login_options(self, instance_name):
         if self.managed:
@@ -185,8 +183,7 @@ class Delegated(Driver):
         if self.managed:
             try:
                 d = self._get_instance_config(instance_name)
-                conn_dict = {}
-                conn_dict["ansible_user"] = d.get("user")
+                conn_dict = {"ansible_user": d.get("user")}
                 conn_dict["ansible_host"] = d.get("address")
                 conn_dict["ansible_port"] = d.get("port")
                 if d.get("connection", None):
@@ -229,9 +226,7 @@ class Delegated(Driver):
         return self.options.get("ansible_connection_options", {})
 
     def _created(self):
-        if self.managed:
-            return super(Delegated, self)._created()
-        return "unknown"
+        return super(Delegated, self)._created() if self.managed else "unknown"
 
     def _get_instance_config(self, instance_name):
         instance_config_dict = util.safe_load_file(self._config.driver.instance_config)

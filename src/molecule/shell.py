@@ -85,22 +85,7 @@ def print_version(ctx, param, value):
     default=MOLECULE_VERBOSITY,
     help="Increase Ansible verbosity level. Default is 0.",
 )
-@click.option(
-    "--base-config",
-    "-c",
-    multiple=True,
-    default=[LOCAL_CONFIG] if LOCAL_CONFIG else [],
-    help=(
-        "Path to a base config (can be specified multiple times)."
-        " If provided, Molecule will first load and deep merge the"
-        " configurations in the specified order,"
-        " and deep merge each scenario's "
-        "molecule.yml on top. By default Molecule is looking for "
-        "'{}' "
-        "in current VCS repository and if not found it will look "
-        "in user home. ({})."
-    ).format(LOCAL_CONFIG_SEARCH, LOCAL_CONFIG),
-)
+@click.option("--base-config", "-c", multiple=True, default=[LOCAL_CONFIG] if LOCAL_CONFIG else [], help=f"Path to a base config (can be specified multiple times). If provided, Molecule will first load and deep merge the configurations in the specified order, and deep merge each scenario's molecule.yml on top. By default Molecule is looking for '{LOCAL_CONFIG_SEARCH}' in current VCS repository and if not found it will look in user home. ({LOCAL_CONFIG}).")
 @click.option(
     "--env-file",
     "-e",
@@ -111,7 +96,7 @@ def print_version(ctx, param, value):
     "--version", is_flag=True, callback=print_version, expose_value=False, is_eager=True
 )
 @click.pass_context
-def main(ctx, debug, verbose, base_config, env_file):  # pragma: no cover
+def main(ctx, debug, verbose, base_config, env_file):    # pragma: no cover
     """
     Molecule aids in the development and testing of Ansible roles.
 
@@ -119,8 +104,7 @@ def main(ctx, debug, verbose, base_config, env_file):  # pragma: no cover
 
       eval "$(_MOLECULE_COMPLETE=source molecule)"
     """
-    ctx.obj = {}
-    ctx.obj["args"] = {}
+    ctx.obj = {"args": {}}
     ctx.obj["args"]["debug"] = debug
     ctx.obj["args"]["verbose"] = verbose
     ctx.obj["args"]["base_config"] = base_config

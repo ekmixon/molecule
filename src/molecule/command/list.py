@@ -104,7 +104,7 @@ class List(base.Base):
     default="simple",
     help="Change output format. (simple)",
 )
-def list(ctx, scenario_name, format):  # pragma: no cover
+def list(ctx, scenario_name, format):    # pragma: no cover
     """List status of instances."""
     args = ctx.obj.get("args")
     subcommand = base._get_subcommand(__name__)
@@ -116,7 +116,7 @@ def list(ctx, scenario_name, format):  # pragma: no cover
         statuses.extend(base.execute_subcommand(scenario.config, subcommand))
 
     headers = [text.title(name) for name in Status._fields]
-    if format == "simple" or format == "plain":
+    if format in ["simple", "plain"]:
         table_format = format  # "simple"
 
         if format == "plain":

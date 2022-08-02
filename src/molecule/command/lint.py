@@ -96,22 +96,13 @@ class Lint(base.Base):
 
         result = util.run_command(cmd, env=self.env, echo=True)
         if result.returncode != 0:
-            util.sysexit_with_message(
-                "Lint failed with error code %s" % result.returncode
-            )
+            util.sysexit_with_message(f"Lint failed with error code {result.returncode}")
 
 
 @base.click_command_ex()
 @click.pass_context
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
-def lint(ctx, scenario_name):  # pragma: no cover
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
+def lint(ctx, scenario_name):    # pragma: no cover
     """Lint the role (dependency, lint)."""
     args = ctx.obj.get("args")
     subcommand = base._get_subcommand(__name__)

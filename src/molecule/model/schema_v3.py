@@ -328,7 +328,7 @@ class Validator(cerberus.Validator):
             data = (doc[field] for doc in self.root_document[root_key])
             for key, count in collections.Counter(data).items():
                 if count > 1:
-                    msg = "'{}' is not unique".format(key)
+                    msg = f"'{key}' is not unique"
                     self._error(field, msg)
 
     def _validate_disallowed(self, disallowed, field, value):
@@ -348,9 +348,7 @@ class Validator(cerberus.Validator):
         therefore we cannot simply pass a ``'coerce': 'string'`` to the schema
         definition.
         """
-        if type(value) == int:
-            return str(value)
-        return value
+        return str(value) if type(value) == int else value
 
     def _validate_molecule_env_var(self, molecule_env_var, field, value):
         """Readonly but with a custom error.
@@ -361,10 +359,9 @@ class Validator(cerberus.Validator):
         # TODO(retr0h): This needs to be better handled.
         pattern = r"^[{$]+MOLECULE[_a-z0-9A-Z]+[}]*$"
 
-        if molecule_env_var:
-            if re.match(pattern, value):
-                msg = "cannot reference $MOLECULE special variables " "in this section"
-                self._error(field, msg)
+        if molecule_env_var and re.match(pattern, value):
+            msg = "cannot reference $MOLECULE special variables " "in this section"
+            self._error(field, msg)
 
 
 def pre_validate(stream, env: MutableMapping, keep_string: str):

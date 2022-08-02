@@ -47,17 +47,13 @@ def require_installed_package():
     try:
         pkg_resources.require("molecule")
     except pkg_resources.DistributionNotFound as e:
-        pytest.fail(
-            "Functional tests require molecule package to be installed: {}".format(e)
-        )
+        pytest.fail(f"Functional tests require molecule package to be installed: {e}")
 
 
 def _env_vars_exposed(env_vars, env=os.environ):
     """Check if environment variables are exposed and populated."""
     for env_var in env_vars:
-        if env_var not in os.environ:
-            return False
-        return os.environ[env_var] != ""
+        return False if env_var not in os.environ else os.environ[env_var] != ""
 
 
 @pytest.fixture
@@ -201,11 +197,9 @@ def login(login_args, scenario_name="default"):
 
     for instance, regexp in login_args:
         if len(login_args) > 1:
-            child_cmd = "molecule login --host {} --scenario-name {}".format(
-                instance, scenario_name
-            )
+            child_cmd = f"molecule login --host {instance} --scenario-name {scenario_name}"
         else:
-            child_cmd = "molecule login --scenario-name {}".format(scenario_name)
+            child_cmd = f"molecule login --scenario-name {scenario_name}"
         child = pexpect.spawn(child_cmd)
         child.expect(regexp)
         # If the test returns and doesn't hang it succeeded.
@@ -247,8 +241,7 @@ def get_virtualbox_executable():
 @pytest.helpers.register
 @util.lru_cache()
 def supports_docker():
-    docker = get_docker_executable()
-    if docker:
+    if docker := get_docker_executable():
         result = subprocess.run([docker, "info"], stdout=PIPE, universal_newlines=True)
         if result.returncode != 0:
             LOG.error(

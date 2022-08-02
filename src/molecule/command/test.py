@@ -98,14 +98,7 @@ class Test(base.Base):
 
 @base.click_command_ex()
 @click.pass_context
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
 @click.option(
     "--driver-name",
     "-d",
@@ -129,7 +122,7 @@ class Test(base.Base):
     default=MOLECULE_PARALLEL,
     help="Enable or disable parallel mode. Default is disabled.",
 )
-def test(ctx, scenario_name, driver_name, __all, destroy, parallel):  # pragma: no cover
+def test(ctx, scenario_name, driver_name, __all, destroy, parallel):    # pragma: no cover
     """Test (dependency, lint, cleanup, destroy, syntax, create, prepare, converge, idempotence, side_effect, verify, cleanup, destroy)."""
     args = ctx.obj.get("args")
     subcommand = base._get_subcommand(__name__)

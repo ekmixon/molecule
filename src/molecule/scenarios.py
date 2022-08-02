@@ -73,15 +73,13 @@ class Scenarios(object):
         msg = "Test matrix"
         LOG.info(msg)
 
-        tree = {}
-        for scenario in self.all:
-            tree[scenario.name] = [action for action in scenario.sequence]
+        tree = {scenario.name: list(scenario.sequence) for scenario in self.all}
         util.print_as_yaml(tree)
 
     def sequence(self, scenario_name: str) -> List[str]:
         for scenario in self.all:
             if scenario.name == scenario_name:
-                return [action for action in scenario.sequence]
+                return list(scenario.sequence)
         raise RuntimeError("Unable to find sequence for {scenario_name} scenario.")
 
     def _verify(self):
@@ -92,7 +90,7 @@ class Scenarios(object):
         """
         scenario_names = [c.scenario.name for c in self._configs]
         if self._scenario_name not in scenario_names:
-            msg = ("Scenario '{}' not found.  " "Exiting.").format(self._scenario_name)
+            msg = f"Scenario '{self._scenario_name}' not found.  Exiting."
             util.sysexit_with_message(msg)
 
     def _filter_for_scenario(self):

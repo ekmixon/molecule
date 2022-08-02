@@ -72,12 +72,12 @@ def print_environment_vars(env: Optional[Dict[str, str]]) -> None:
             "MOLECULE ENVIRONMENT", safe_dump(molecule_env, explicit_start=False)
         )
 
-        combined_env = ansible_env.copy()
-        combined_env.update(molecule_env)
+        combined_env = ansible_env | molecule_env
         print_debug(
             "SHELL REPLAY",
-            " ".join(["{}={}".format(k, v) for (k, v) in sorted(combined_env.items())]),
+            " ".join([f"{k}={v}" for (k, v) in sorted(combined_env.items())]),
         )
+
         print()
 
 
@@ -102,10 +102,7 @@ def sysexit_with_message(
     # detail is usually a multi-line string which is not suitable for normal
     # logger.
     if detail:
-        if isinstance(detail, dict):
-            detail_str = safe_dump(detail)
-        else:
-            detail_str = str(detail)
+        detail_str = safe_dump(detail) if isinstance(detail, dict) else str(detail)
         print(detail_str)
     LOG.critical(msg)
     sysexit(code)
@@ -131,7 +128,7 @@ def run_command(
             "See https://github.com/ansible-community/molecule/issues/2678"
         )
     elif cmd.__class__.__name__ == "BakedCommand":
-        env = cmd.env if not env else cmd.env.copy().update(env)
+        env = cmd.env.copy().update(env) if env else cmd.env
         args = cmd.cmd
         stdout = cmd.stdout
         stderr = cmd.stderr
@@ -166,9 +163,7 @@ def os_walk(directory, pattern, excludes=[], followlinks=False):
         dirs[:] = [d for d in dirs if d not in excludes]
         for basename in files:
             if fnmatch.fnmatch(basename, pattern):
-                filename = os.path.join(root, basename)
-
-                yield filename
+                yield os.path.join(root, basename)
 
 
 def render_template(template, **kwargs):
@@ -264,21 +259,21 @@ def open_file(filename, mode="r"):
 
 def instance_with_scenario_name(instance_name, scenario_name):
     """Format instance name that includes scenario."""
-    return "{}-{}".format(instance_name, scenario_name)
+    return f"{instance_name}-{scenario_name}"
 
 
 def verbose_flag(options):
     """Return computed verbosity flag."""
     verbose = "v"
     verbose_flag = []
-    for i in range(0, 3):
+    for _ in range(3):
         if options.get(verbose):
-            verbose_flag = ["-{}".format(verbose)]
+            verbose_flag = [f"-{verbose}"]
             del options[verbose]
             if options.get("verbose"):
                 del options["verbose"]
             break
-        verbose = verbose + "v"
+        verbose = f"{verbose}v"
 
     return verbose_flag
 
@@ -346,7 +341,7 @@ def find_vcs_root(location="", dirs=(".git", ".hg", ".svn"), default=None) -> st
 def lookup_config_file(filename: str) -> Optional[str]:
     """Return config file PATH."""
     for path in [find_vcs_root(default="~"), "~"]:
-        f = os.path.expanduser("%s/%s" % (path, filename))
+        f = os.path.expanduser(f"{path}/{filename}")
         if os.path.isfile(f):
             LOG.info("Found config file %s", f)
             return f

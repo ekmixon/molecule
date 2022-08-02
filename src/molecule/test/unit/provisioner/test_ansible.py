@@ -641,7 +641,7 @@ def test_link_vars_raises_when_source_not_found(_instance, patched_logger_critic
     assert 1 == e.value.code
 
     source = os.path.join(_instance._config.scenario.directory, os.path.pardir, "bar")
-    msg = "The source path '{}' does not exist.".format(source)
+    msg = f"The source path '{source}' does not exist."
     patched_logger_critical.assert_called_once_with(msg)
 
 
@@ -694,7 +694,7 @@ def test_get_modules_directories(_instance, monkeypatch):
     lib_prev = os.environ.get("ANSIBLE_LIBRARY")
     monkeypatch.setenv("ANSIBLE_LIBRARY", "/foo/bar")
     result = _instance._get_modules_directories()[-1]
-    monkeypatch.setenv("ANSIBLE_LIBRARY", lib_prev if lib_prev else "")
+    monkeypatch.setenv("ANSIBLE_LIBRARY", lib_prev or "")
 
     env_lib_result_parts = pytest.helpers.os_split(result)
     env_lib_expected_parts = ("foo", "bar")

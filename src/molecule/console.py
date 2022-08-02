@@ -33,9 +33,7 @@ def to_bool(a: Any) -> bool:
         return bool(a)
     if isinstance(a, str):
         a = a.lower()
-    if a in ("yes", "on", "1", "true", 1):
-        return True
-    return False
+    return a in ("yes", "on", "1", "true", 1)
 
 
 def should_do_markup() -> bool:
@@ -61,14 +59,7 @@ def should_do_markup() -> bool:
     if "xterm" in term:
         return True
 
-    if term == "dumb":
-        return False
-
-    # Use tty detection logic as last resort because there are numerous
-    # factors that can make isatty return a misleading value, including:
-    # - stdin.isatty() is the only one returning true, even on a real terminal
-    # - stderr returting false if user user uses a error stream coloring solution
-    return sys.stdout.isatty()
+    return False if term == "dumb" else sys.stdout.isatty()
 
 
 console = Console(

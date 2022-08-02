@@ -113,11 +113,9 @@ class Login(base.Base):
                 )
                 util.sysexit_with_message(msg)
         match = [x for x in hosts if x.startswith(hostname)]
-        if len(match) == 0:
-            msg = (
-                "There are no hosts that match '{}'.  You "
-                "can only login to valid hosts."
-            ).format(hostname)
+        if not match:
+            msg = f"There are no hosts that match '{hostname}'.  You can only login to valid hosts."
+
             util.sysexit_with_message(msg)
         elif len(match) != 1:
             # If there are multiple matches, but one of them is an exact string
@@ -143,22 +141,15 @@ class Login(base.Base):
         login_options["lines"] = lines
         login_cmd = self._config.driver.login_cmd_template.format(**login_options)
 
-        cmd = "/usr/bin/env {}".format(login_cmd)
+        cmd = f"/usr/bin/env {login_cmd}"
         run(cmd, shell=True)
 
 
 @base.click_command_ex()
 @click.pass_context
 @click.option("--host", "-h", help="Host to access.")
-@click.option(
-    "--scenario-name",
-    "-s",
-    default=base.MOLECULE_DEFAULT_SCENARIO_NAME,
-    help="Name of the scenario to target. ({})".format(
-        base.MOLECULE_DEFAULT_SCENARIO_NAME
-    ),
-)
-def login(ctx, host, scenario_name):  # pragma: no cover
+@click.option("--scenario-name", "-s", default=base.MOLECULE_DEFAULT_SCENARIO_NAME, help=f"Name of the scenario to target. ({base.MOLECULE_DEFAULT_SCENARIO_NAME})")
+def login(ctx, host, scenario_name):    # pragma: no cover
     """Log in to one instance."""
     args = ctx.obj.get("args")
     subcommand = base._get_subcommand(__name__)
